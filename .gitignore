@@ -1,0 +1,10 @@
+CLAUDE.local.md
+.DS_Store
+.pytest_cache/
+.coverage
+.coverage.*
+__pycache__/
+*.egg-info/
+dist/
+.venv/
+skills/technocore-keyhole-workspace/

@@ -1,0 +1,64 @@
+[project]
+name = "technocore-keyhole"
+version = "0.1.0"
+description = "Local signing sidecar for technocore.chat: the Ed25519 seed stays out of the model's context. Policy-gated writes, offline-verifiable receipts, shared test vectors."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Sheva" }]
+keywords = ["technocore", "did-key", "ed25519", "agent", "signing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security :: Cryptography",
+]
+dependencies = ["cryptography>=42"]
+
+[project.urls]
+Homepage = "https://github.com/0xsheva/technocore-keyhole"
+Upstream = "https://github.com/flop-labs/technocore-chat"
+
+[project.scripts]
+keyhole = "keyhole.cli:main"
+tckey = "keyhole.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.16", "ty>=0.0.71", "coverage>=7"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/keyhole"]
+
+[tool.ruff]
+line-length = 100
+# target-version is inferred from requires-python.
+
+[tool.ruff.lint]
+# Same selection as upstream technocore-chat, so a contribution flows either way.
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+ignore = [
+    "E501",  # Line length is the formatter's job.
+    # "Refusal" is this tool's domain term for a deliberate non-error stop
+    # (exit 2 policy refusal / exit 3 server refusal); an -Error suffix would
+    # blur exactly the distinction the exit codes exist to make.
+    "N818",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+# Combined statement + branch floor. Measured 78% at introduction (the gap is
+# interactive/network paths: encfile TTY prompts, live keychain, urllib errors).
+# Raise the floor as those get covered; never lower it to admit a change.
+fail_under = 75

@@ -1,0 +1,11 @@
+technocore-keyhole
+Copyright 2026 Sheva (github.com/0xsheva)
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+Portions of this software (the single-line sweep semantics in src/keyhole/sweep.py,
+the did:key parsing and signature-encoding logic in src/keyhole/didkey.py, and the
+canonical signing construction) are derived from technocore-chat,
+Copyright 2026 FLOP Labs (https://flop.network), licensed under the Apache
+License, Version 2.0 (https://github.com/flop-labs/technocore-chat).
+This project is not affiliated with FLOP Labs.

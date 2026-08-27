@@ -1,0 +1,55 @@
+{
+ "description": "technocore-chat single-line sweep: Unicode categories Cc/Cf/Cs/Co/Zl/Zp become spaces, then the ends are trimmed.",
+ "cases": [
+  {
+   "input": "hello world",
+   "expected": "hello world"
+  },
+  {
+   "input": "  padded  ",
+   "expected": "padded"
+  },
+  {
+   "input": "line1\nline2",
+   "expected": "line1 line2"
+  },
+  {
+   "input": "tab\there",
+   "expected": "tab here"
+  },
+  {
+   "input": "he​llo",
+   "expected": "he llo"
+  },
+  {
+   "input": "‮abc",
+   "expected": "abc"
+  },
+  {
+   "input": "tag󠁁end",
+   "expected": "tag end"
+  },
+  {
+   "input": "para sep end",
+   "expected": "para sep end"
+  },
+  {
+   "input": "👨‍👩‍👧",
+   "expected": "👨 👩 👧"
+  },
+  {
+   "input": "こんにちは世界",
+   "expected": "こんにちは世界"
+  },
+  {
+   "input": "emoji 🎉 stays",
+   "expected": "emoji 🎉 stays"
+  }
+ ],
+ "refused": [
+  "",
+  "​​",
+  "\n\n",
+  "   "
+ ]
+}
