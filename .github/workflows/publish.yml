@@ -1,0 +1,22 @@
+name: publish
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    # Trusted Publishing (OIDC): no long-lived token anywhere — consistent with
+    # this repo's rule that CI never holds credentials. Configure the publisher
+    # at https://pypi.org/manage/account/publishing/ (owner 0xsheva, repo
+    # technocore-keyhole, workflow publish.yml, environment pypi).
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv build
+      - uses: pypa/gh-action-pypi-publish@release/v1
