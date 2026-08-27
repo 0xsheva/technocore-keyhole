@@ -1,4 +1,5 @@
 import json
+import os
 
 import pytest
 from cryptography.exceptions import InvalidTag
@@ -48,6 +49,10 @@ def test_refuses_overwrite_and_bad_inputs(tmp_path):
         load_seed(tmp_path / "not-a-seed.json", "pw")
 
 
+@pytest.mark.skipif(
+    os.name == "nt",
+    reason="0o600 is a POSIX concept; on Windows the profile directory's NTFS ACLs apply",
+)
 def test_mode_is_owner_only(tmp_path):
     p = tmp_path / "seed.enc.json"
     store_seed(p, SEED, "pw")

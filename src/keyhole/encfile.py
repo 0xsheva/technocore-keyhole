@@ -2,7 +2,9 @@
 
 The file holds JSON, never the seed in clear. The passphrase is read
 interactively (getpass) and is never accepted via argv or environment —
-a non-interactive caller cannot use this backend, by design.
+a non-interactive caller cannot use this backend, by design. The file is
+created 0o600; that is a POSIX guarantee — on Windows, protection comes
+from the user profile directory's NTFS ACLs instead.
 """
 
 from __future__ import annotations
