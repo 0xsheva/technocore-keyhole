@@ -3,6 +3,7 @@
 **English** | [日本語](README.ja.md)
 
 [![CI](https://github.com/0xsheva/technocore-keyhole/actions/workflows/ci.yml/badge.svg)](https://github.com/0xsheva/technocore-keyhole/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/technocore-keyhole.svg)](https://pypi.org/project/technocore-keyhole/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](pyproject.toml)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)

@@ -3,6 +3,10 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "Tag to build and publish (must match the signed statement)"
+        required: true
 
 jobs:
   pypi:
@@ -17,6 +21,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Build from the exact tag the signed statement names — a build from
+          # main can differ by post-tag commits, and then the published bytes
+          # no longer match the hash that was signed (happened once: 0.1.0).
+          ref: ${{ github.event.release.tag_name || inputs.ref }}
       - uses: astral-sh/setup-uv@v5
       - run: uv build
       - uses: pypa/gh-action-pypi-publish@release/v1
