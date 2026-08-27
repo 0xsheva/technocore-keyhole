@@ -46,13 +46,13 @@ def store_seed(path: Path, seed: bytes, passphrase: str) -> None:
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-    with os.fdopen(fd, "w") as f:
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
         json.dump(doc, f, indent=1)
         f.write("\n")
 
 
 def load_seed(path: Path, passphrase: str) -> bytes:
-    doc = json.loads(path.read_text())
+    doc = json.loads(path.read_text(encoding="utf-8"))
     if doc.get("format") != "technocore-keyhole-seed" or doc.get("v") != 1:
         raise ValueError(f"{path} is not a keyhole seed file")
     salt = base64.b64decode(doc["kdf"]["salt"])

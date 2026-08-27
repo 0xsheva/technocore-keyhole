@@ -286,7 +286,7 @@ def cmd_receipts(args: argparse.Namespace) -> int:
     if not path.exists():
         print("no receipts yet")
         return EXIT_OK
-    with path.open() as f:
+    with path.open(encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:

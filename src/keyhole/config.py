@@ -44,7 +44,7 @@ class Config:
         p = config_path()
         if not p.exists():
             raise FileNotFoundError(f"no config at {p} — run `keyhole init` first")
-        doc = json.loads(p.read_text())
+        doc = json.loads(p.read_text(encoding="utf-8"))
         known = {k: doc[k] for k in cls.__dataclass_fields__ if k in doc}
         return cls(**known)
 
@@ -53,7 +53,7 @@ class Config:
         p.parent.mkdir(parents=True, exist_ok=True)
         tmp = p.with_suffix(".tmp")
         fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-        with os.fdopen(fd, "w") as f:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
             json.dump(self.__dict__, f, indent=1, ensure_ascii=False)
             f.write("\n")
         os.replace(tmp, p)

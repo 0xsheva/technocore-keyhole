@@ -77,7 +77,7 @@ def ledger_lock(path: Path):
     the one case where a read-only caller may degrade to lockless."""
     path.parent.mkdir(parents=True, exist_ok=True)
     lock_path = path.with_suffix(path.suffix + ".lock")
-    with open(lock_path, "w") as f:
+    with open(lock_path, "w", encoding="utf-8") as f:
         _lock_file(f)
         try:
             yield
@@ -99,7 +99,7 @@ def _ledger_lines(path: Path) -> list[tuple[int, str]]:
     """Read nonblank ledger lines once, preserving source line numbers."""
     if not path.exists():
         return []
-    with path.open() as f:
+    with path.open(encoding="utf-8") as f:
         return [
             (line_no, line)
             for line_no, raw in enumerate(f, start=1)
@@ -112,7 +112,7 @@ def append(path: Path, entry: dict) -> dict:
     prev = "genesis"
     if path.exists():
         last = ""
-        with path.open() as f:
+        with path.open(encoding="utf-8") as f:
             for raw in f:
                 if raw.strip():
                     last = raw.rstrip("\n")
@@ -120,7 +120,7 @@ def append(path: Path, entry: dict) -> dict:
             prev = _sha256_line(last)
     entry = {"v": 1, "local_ts": round(time.time(), 3), **entry, "prev": prev}
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a") as f:
+    with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=True, separators=(",", ":")) + "\n")
     return entry
 
@@ -130,7 +130,7 @@ def last_nonce(path: Path, room: str) -> int:
     best = 0
     if not path.exists():
         return best
-    with path.open() as f:
+    with path.open(encoding="utf-8") as f:
         for raw in f:
             raw = raw.strip()
             if not raw:
@@ -231,7 +231,7 @@ def export_json(path: Path) -> str:
     standard; a TCR-1 exporter can be added once upstream issue #281 settles)."""
     entries = []
     if path.exists():
-        with path.open() as f:
+        with path.open(encoding="utf-8") as f:
             for raw in f:
                 raw = raw.strip()
                 if raw:

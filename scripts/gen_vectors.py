@@ -61,7 +61,9 @@ def main() -> None:
         "cases": [{"input": i, "expected": e} for i, e in SWEEP_CASES],
         "refused": REFUSED,
     }
-    (out_dir / "sweep.json").write_text(json.dumps(sweep_doc, ensure_ascii=False, indent=1) + "\n")
+    (out_dir / "sweep.json").write_text(
+        json.dumps(sweep_doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+    )
 
     key = Ed25519PrivateKey.from_private_bytes(bytes.fromhex(TEST_SEED_HEX))
     signer = Signer(key)
@@ -88,7 +90,9 @@ def main() -> None:
         "nonce_rule": "1-19 ASCII digits, strictly increasing per key per room",
         "cases": cases,
     }
-    (out_dir / "signing.json").write_text(json.dumps(sign_doc, ensure_ascii=False, indent=1) + "\n")
+    (out_dir / "signing.json").write_text(
+        json.dumps(sign_doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+    )
 
     for raw in REFUSED:
         try:

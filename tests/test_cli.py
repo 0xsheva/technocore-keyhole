@@ -111,7 +111,7 @@ def test_verify_reads_one_snapshot_under_the_ledger_lock(cfg_dir, capsys):
     _write_config(cfg_dir)
     path = Config.load().receipts()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("")
+    path.write_text("", encoding="utf-8")
     started, finished = threading.Event(), threading.Event()
     rc = {}
 
@@ -201,10 +201,12 @@ def test_verify_ledger_third_party_needs_no_config(tmp_path, monkeypatch, capsys
     assert cli.main(["verify", "--ledger", str(shared), "--expect-head", anchor]) == cli.EXIT_OK
     capsys.readouterr()
 
-    lines = shared.read_text().splitlines()
+    lines = shared.read_text(encoding="utf-8").splitlines()
     doc = json.loads(lines[0])
     doc["text"] = "forged"
-    shared.write_text("\n".join([json.dumps(doc, separators=(",", ":"))] + lines[1:]) + "\n")
+    shared.write_text(
+        "\n".join([json.dumps(doc, separators=(",", ":"))] + lines[1:]) + "\n", encoding="utf-8"
+    )
     assert cli.main(["verify", "--ledger", str(shared)]) == cli.EXIT_ERROR
     assert cli.main(["verify", "--ledger", str(tmp_path / "missing.jsonl")]) == cli.EXIT_ERROR
 
@@ -282,8 +284,8 @@ def test_expect_head_is_a_checkpoint_not_an_exact_match(cfg_dir, capsys, monkeyp
     from keyhole.config import Config
 
     ledger = Config.load().receipts()
-    lines = ledger.read_text().splitlines()
-    ledger.write_text(lines[0] + "\n")  # keep only entry 1
+    lines = ledger.read_text(encoding="utf-8").splitlines()
+    ledger.write_text(lines[0] + "\n", encoding="utf-8")  # keep only entry 1
 
     assert cli.main(["verify"]) == cli.EXIT_OK  # documented limitation: chain alone passes
     assert cli.main(["verify", "--expect-head", recorded["head"]]) == cli.EXIT_ERROR
@@ -301,7 +303,7 @@ def test_unverifiable_200_response_records_pending_receipt(cfg_dir, capsys, monk
 
     from keyhole.config import Config
 
-    raw = Config.load().receipts().read_text().splitlines()
+    raw = Config.load().receipts().read_text(encoding="utf-8").splitlines()
     entries = [json.loads(line) for line in raw if line]
     assert len(entries) == 1
     assert entries[0]["status"] == "unverified" and entries[0]["seq"] is None

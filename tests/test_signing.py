@@ -7,7 +7,9 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from keyhole import didkey
 from keyhole.signer import Signer
 
-DOC = json.loads((Path(__file__).parents[1] / "vectors" / "signing.json").read_text())
+DOC = json.loads(
+    (Path(__file__).parents[1] / "vectors" / "signing.json").read_text(encoding="utf-8")
+)
 SIGNER = Signer(Ed25519PrivateKey.from_private_bytes(bytes.fromhex(DOC["seed_hex_TEST_ONLY"])))
 
 

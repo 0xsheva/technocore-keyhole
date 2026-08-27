@@ -41,7 +41,14 @@ line-length = 100
 
 [tool.ruff.lint]
 # Same selection as upstream technocore-chat, so a contribution flows either way.
-select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+# preview+explicit-preview-rules: activate ONLY the explicitly selected preview
+# rule (PLW1514) without opting into other preview behavior.
+preview = true
+explicit-preview-rules = true
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4",
+          # Windows runs with a cp1252 locale default; an open()/read_text()
+          # without encoding= is a latent UnicodeDecodeError (caught by CI once).
+          "PLW1514"]
 ignore = [
     "E501",  # Line length is the formatter's job.
     # "Refusal" is this tool's domain term for a deliberate non-error stop

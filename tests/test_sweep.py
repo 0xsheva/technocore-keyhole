@@ -5,7 +5,9 @@ import pytest
 
 from keyhole.sweep import MAX_TEXT_CHARS, SweepError, swept
 
-VECTORS = json.loads((Path(__file__).parents[1] / "vectors" / "sweep.json").read_text())
+VECTORS = json.loads(
+    (Path(__file__).parents[1] / "vectors" / "sweep.json").read_text(encoding="utf-8")
+)
 
 
 @pytest.mark.parametrize("case", VECTORS["cases"], ids=lambda c: repr(c["input"])[:30])

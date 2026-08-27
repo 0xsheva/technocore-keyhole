@@ -48,7 +48,7 @@ def check_rate(cfg: Config, receipts_path: Path) -> None:
         return
     cutoff = time.time() - 3600
     recent = 0
-    with receipts_path.open() as f:
+    with receipts_path.open(encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if not line:

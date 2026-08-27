@@ -12,9 +12,9 @@ def test_roundtrip(tmp_path):
     p = tmp_path / "seed.enc.json"
     store_seed(p, SEED, "correct horse")
     assert load_seed(p, "correct horse") == SEED
-    doc = json.loads(p.read_text())
+    doc = json.loads(p.read_text(encoding="utf-8"))
     assert doc["format"] == "technocore-keyhole-seed" and doc["kdf"]["name"] == "scrypt"
-    assert SEED.hex() not in p.read_text().lower()  # never stored in clear
+    assert SEED.hex() not in p.read_text(encoding="utf-8").lower()  # never stored in clear
 
 
 def test_wrong_passphrase_fails_closed(tmp_path):
@@ -27,9 +27,9 @@ def test_wrong_passphrase_fails_closed(tmp_path):
 def test_tampered_ciphertext_fails_closed(tmp_path):
     p = tmp_path / "seed.enc.json"
     store_seed(p, SEED, "pw")
-    doc = json.loads(p.read_text())
+    doc = json.loads(p.read_text(encoding="utf-8"))
     doc["ct"] = doc["ct"][:-4] + ("AAAA" if not doc["ct"].endswith("AAAA") else "BBBB")
-    p.write_text(json.dumps(doc))
+    p.write_text(json.dumps(doc), encoding="utf-8")
     with pytest.raises(InvalidTag):
         load_seed(p, "pw")
 
@@ -41,7 +41,9 @@ def test_refuses_overwrite_and_bad_inputs(tmp_path):
         store_seed(p, SEED, "pw")  # O_EXCL: an existing seed file is never clobbered
     with pytest.raises(ValueError):
         store_seed(tmp_path / "other.json", b"short", "pw")
-    (tmp_path / "not-a-seed.json").write_text('{"format": "something-else", "v": 1}')
+    (tmp_path / "not-a-seed.json").write_text(
+        '{"format": "something-else", "v": 1}', encoding="utf-8"
+    )
     with pytest.raises(ValueError):
         load_seed(tmp_path / "not-a-seed.json", "pw")
 

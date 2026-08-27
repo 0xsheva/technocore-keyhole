@@ -45,11 +45,11 @@ def test_tampered_text_detected(tmp_path):
     ledger = tmp_path / "receipts.jsonl"
     _commit(ledger, "lobby", "1", "first")
     _commit(ledger, "lobby", "2", "second")
-    lines = ledger.read_text().splitlines()
+    lines = ledger.read_text(encoding="utf-8").splitlines()
     doc = json.loads(lines[0])
     doc["text"] = "forged"
     lines[0] = json.dumps(doc, ensure_ascii=True, separators=(",", ":"))
-    ledger.write_text("\n".join(lines) + "\n")
+    ledger.write_text("\n".join(lines) + "\n", encoding="utf-8")
     checks = verify_ledger(ledger)
     assert not checks[0].ok and "signature" in checks[0].detail
     assert (
@@ -62,8 +62,8 @@ def test_deleted_line_detected(tmp_path):
     _commit(ledger, "lobby", "1", "first")
     _commit(ledger, "lobby", "2", "second")
     _commit(ledger, "lobby", "3", "third")
-    lines = ledger.read_text().splitlines()
-    ledger.write_text("\n".join([lines[0], lines[2]]) + "\n")
+    lines = ledger.read_text(encoding="utf-8").splitlines()
+    ledger.write_text("\n".join([lines[0], lines[2]]) + "\n", encoding="utf-8")
     checks = verify_ledger(ledger)
     assert checks[0].ok
     assert not checks[1].ok and "chain" in checks[1].detail
@@ -80,8 +80,8 @@ def test_head_tracks_tail_and_detects_truncation(tmp_path):
     h2 = head(ledger)
     assert h2["entries"] == 2 and h2["head"] != h1["head"]
 
-    lines = ledger.read_text().splitlines()
-    ledger.write_text(lines[0] + "\n")
+    lines = ledger.read_text(encoding="utf-8").splitlines()
+    ledger.write_text(lines[0] + "\n", encoding="utf-8")
     assert all(c.ok for c in verify_ledger(ledger))  # chain alone cannot see tail truncation
     assert head(ledger) == h1  # but the anchored head reveals it
 
@@ -98,8 +98,8 @@ def test_find_checkpoint(tmp_path):
     assert find_checkpoint(ledger, h1) == (1, 3)  # anchor survives appends
     assert find_checkpoint(ledger, head(ledger)["head"]) == (3, 3)
     assert find_checkpoint(ledger, "f" * 64) == (-1, 3)  # unknown anchor
-    lines = ledger.read_text().splitlines()
-    ledger.write_text("\n".join(lines[1:]) + "\n")  # drop entry 1
+    lines = ledger.read_text(encoding="utf-8").splitlines()
+    ledger.write_text("\n".join(lines[1:]) + "\n", encoding="utf-8")  # drop entry 1
     assert find_checkpoint(ledger, h1) == (-1, 2)  # anchored prefix gone
 
 
@@ -166,7 +166,11 @@ def test_concurrent_locked_commits_keep_chain_intact(tmp_path):
 
     checks = verify_ledger(ledger)
     assert len(checks) == 8 and all(c.ok for c in checks), [c.detail for c in checks]
-    nonces = [int(json.loads(line)["nonce"]) for line in ledger.read_text().splitlines() if line]
+    nonces = [
+        int(json.loads(line)["nonce"])
+        for line in ledger.read_text(encoding="utf-8").splitlines()
+        if line
+    ]
     assert nonces == sorted(nonces) and len(set(nonces)) == 8
 
 

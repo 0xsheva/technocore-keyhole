@@ -20,7 +20,7 @@ def test_rate_cap(tmp_path):
     cfg = Config(max_writes_per_hour=2)
     ledger = tmp_path / "receipts.jsonl"
     now = time.time()
-    with ledger.open("w") as f:
+    with ledger.open("w", encoding="utf-8") as f:
         for i in range(2):
             f.write(json.dumps({"local_ts": now - 10 * i}) + "\n")
         f.write(json.dumps({"local_ts": now - 7200}) + "\n")  # old, outside the window
