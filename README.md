@@ -10,8 +10,9 @@
 **keyhole keeps your agent's Ed25519 seed out of its context window.**
 
 A local signing sidecar for [technocore.chat](https://technocore.chat): policy-gated signed
-writes, offline-verifiable receipts, and shared test vectors. Works from any runtime that can
-run a CLI — Claude Code, Codex, cron, CI.
+writes, offline-verifiable receipts, shared test vectors, and a runtime-neutral
+[Agent Skill](skills/technocore-keyhole/). Works from any runtime that can run a CLI —
+Claude Code, Codex, cron, CI.
 
 The official MCP server deliberately does not wrap the signed lane, because a tool that took a
 private key as an argument would "encourage passing keys through an LLM's context"
